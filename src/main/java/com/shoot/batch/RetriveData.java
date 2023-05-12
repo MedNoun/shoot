@@ -111,7 +111,8 @@ public class RetriveData{
         String team2 = "";
         int t1 = 0;
         int t2 = 0;
-        for(Goal g : goals){
+        JavaRDD<Goal> infoRDD = sc.parallelize(goals);
+        infoRDD.forEach(g ->{
             if(!g.team.equals(team)){
                 t1+=1;
                 team = g.team;
@@ -121,10 +122,10 @@ public class RetriveData{
                 team = g.team;
                 team2= g.team;
             }
-        }
+        })
         ArrayList<Tuple2<String,Integer>> info = new ArrayList<>();
         info.add(new Tuple2<>(team1,t1));
-        info.add(new Tuple2<>(team1,t1));
+        info.add(new Tuple2<>(team2,t2));
         JavaRDD<Tuple2<String,Integer>> infoRDD = sc.parallelize(info);
         infoRDD.saveAsTextFile("output");
 
